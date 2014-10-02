@@ -1,0 +1,19 @@
+{
+  "name": "coral-angular-module",
+  "version": "0.0.0",
+  "authors": [
+    "Simen Owesen-Lein <simen.owesenlein@gmail.com>"
+  ],
+  "main": "coral-module.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.26"
+  }
+}
