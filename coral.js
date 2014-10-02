@@ -4,11 +4,12 @@
 	var module = angular.module('coral', []);
 
 	module.factory('coral', function() {
-		var webSocket;
+		var webSocket, debug;
 
 		var coral = {};
 
-		coral.connect = function(options, callback) {
+		coral.connect = function(options, callback, turnOnDebug) {
+			debug = turnOnDebug;
 			if (options.networkName && options.className && options.webSocketUrl) {
 				webSocket = new WebSocket(options.webSocketUrl);
 
@@ -87,7 +88,9 @@
 								return;
 							}
 							else {
-								//console.log(message);
+								if (debug) {
+									console.log(message);
+								}
 							}
 						}
 					}
