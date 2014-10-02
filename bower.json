@@ -4,7 +4,7 @@
   "authors": [
     "Simen Owesen-Lein <simen.owesenlein@gmail.com>"
   ],
-  "main": "coral-module.js",
+  "main": "coral.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
