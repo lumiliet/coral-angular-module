@@ -6,13 +6,14 @@
 	module.factory('coral', function() {
 		var webSocket, debug;
 
-		var coral = {};
+		var coral = {
+			myId: "",
+		};
 
 		coral.connect = function(options, callback, turnOnDebug) {
 			debug = turnOnDebug;
-			if (options.networkName && options.className && options.webSocketUrl) {
-				webSocket = new WebSocket(options.webSocketUrl);
 
+			function initWebSocket() {
 				webSocket.onmessage = function(event) {
 					messageHandlers.mainHandler(event.data);
 				};
@@ -29,16 +30,39 @@
 					callback();
 				};
 			}
+
+			coral.on('server_ack', function(message) {
+				if (message.value === 'register') {
+					coral.myId = message.yourId;
+				}
+			});
+
+			if (options.networkName && options.className && options.wsUrl) {
+
+				webSocket = new WebSocket(options.wssUrl);
+				initWebSocket();
+
+				webSocket.onerror = function(error) {
+					webSocket = new WebSocket(options.wsUrl);
+					initWebSocket();
+
+					if (debug) {
+						console.error(error);
+					}
+				};
+
+
+			}
 			else {
 				console.error('Cannot connect, missing parameters');
 			}
 		};
 
-		coral.addHandler = function(handler, type) {
-			messageHandlers.addHandler(handler, type);
+		coral.on = function(type, handler) {
+			messageHandlers.addHandler(type, handler);
 		};
 
-		coral.sendMessage = function(message, to) {
+		coral.sendMessage = function(to, message) {
 			var temp = {
 				type: "message",
 				message: message,
@@ -83,27 +107,35 @@
 							console.error("parsing failed");
 						}
 						if (!parsingFailed) {
+							if (debug) {
+								console.log(message);
+							}
+
 							if (message.type && this.list[message.type]) {
 								messageHandlers.list[message.type](message);
 								return;
-							}
-							else {
-								if (debug) {
-									console.log(message);
-								}
 							}
 						}
 					}
 				}
 			},
 
-			addHandler: function(handler, type) {
+			addHandler: function(type, handler) {
+				if (this.list[type]) {
+					return console.error('Cannot add handler. Already exists');
+				}
+
 				this.list[type] = handler;
 			}
 		};
 
 		function send(object) {
-			webSocket.send(JSON.stringify(object) + "\n");
+			if (webSocket) {
+				webSocket.send(JSON.stringify(object) + "\n");
+			}
+			else {
+				console.error('Sending failed. Not connected');
+			}
 		}
 
 		return coral;
