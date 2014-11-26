@@ -10,8 +10,8 @@
 			myId: "",
 		};
 
-		coral.connect = function(options, callback, turnOnDebug) {
-			debug = turnOnDebug;
+		coral.connect = function(options, callback) {
+			debug = options.debug;
 
 			function initWebSocket() {
 				webSocket.onmessage = function(event) {
