@@ -37,21 +37,22 @@
 				}
 			});
 
-			if (options.networkName && options.className && options.wsUrl) {
-
-				webSocket = new WebSocket(options.wssUrl);
+			function startWebSocket() {
+				webSocket = new WebSocket(options.wsUrl);
 				initWebSocket();
+			}
+			function startSecureWebSocket() {
+				webSocket = new WebSocket(options.wssUrl);
+				webSocket.onerror = startWebSocket;
+			}
 
-				webSocket.onerror = function(error) {
-					webSocket = new WebSocket(options.wsUrl);
-					initWebSocket();
-
-					if (debug) {
-						console.error(error);
-					}
-				};
-
-
+			if (options.networkName && options.className && options.wsUrl) {
+				if (options.wssUrl) {
+					startSecureWebSocket();
+				}
+				else {
+					startWebSocket();
+				}
 			}
 			else {
 				console.error('Cannot connect, missing parameters');
