@@ -60,10 +60,16 @@
 		};
 
 		coral.on = function(type, handler) {
+			if (debug) {
+				console.log("on", type);
+			}
 			messageHandlers.addHandler(type, handler);
 		};
 
 		coral.sendMessage = function(to, message) {
+			if (debug) {
+				console.log("sending message", to, message);
+			}
 			var temp = {
 				type: "message",
 				message: message,
@@ -73,6 +79,9 @@
 		};
 
 		coral.subscribe = function(type, to, value) {
+			if (debug) {
+				console.log("subscribe", type, to, value);
+			}
 			var temp = {
 				type: "subscribe",
 				subscribe: {
@@ -85,6 +94,9 @@
 		};
 
 		coral.broadcast = function(message) {
+			if (debug) {
+				console.log("broadcast: ", message);
+			}
 			var temp = {
 				type: "broadcast",
 				message: message
@@ -109,7 +121,7 @@
 						}
 						if (!parsingFailed) {
 							if (debug) {
-								console.log(message);
+								console.log("receiving message", message);
 							}
 
 							if (message.type && this.list[message.type]) {
