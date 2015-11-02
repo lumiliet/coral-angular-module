@@ -27,13 +27,13 @@
 					};
 					send(temp);
 
-					callback();
 				};
 			}
 
 			coral.on('server_ack', function(message) {
 				if (message.value === 'register') {
 					coral.myId = message.yourId;
+					callback();
 				}
 			});
 
